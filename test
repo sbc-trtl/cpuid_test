@@ -1,0 +1,36 @@
+#include <iostream>
+#include <assert.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <cpuid.h>
+
+using namespace std;
+
+int cpuid(int CPUInfo[4], int InfoType)
+{
+    asm __volatile__
+    (
+    "cpuid":
+        "=a" (CPUInfo[0]),
+        "=b" (CPUInfo[1]),
+        "=c" (CPUInfo[2]),
+        "=d" (CPUInfo[3]) :
+            "a" (InfoType), "c" (0)
+        );
+}
+int main()
+{
+    int eax, ebx, ecx, edx, exx[4];
+    __cpuid(1, eax, ebx, ecx, edx);
+    cout << "using cpuid.h" << endl;
+    cout << "cpuid eax= " << eax << endl;
+    cout << "cpuid ebx= " << ebx << endl;
+    cout << "cpuid ecx= " << ecx << endl;
+    cout << "cpuid edx= " << edx << endl;
+    cpuid(exx, 1);
+    cout << "experimental ecx= " << exx[2] << endl;
+    return 0;
+}
